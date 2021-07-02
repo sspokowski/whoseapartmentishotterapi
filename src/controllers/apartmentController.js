@@ -9,22 +9,23 @@ class ApartmentController {
      */
     getHottestApartment = async (request, response) => {
        const temps = await getHottestApartment();
-       const hotString = determineHottest(temps);
-       response.send({hottest: hotString});
+       response.send(determineHottest(temps));
        return;
     }
 }
 function determineHottest(temps){
     const arlo = parseArlo(temps.arlo);
     const shak = temps.shak;
-
+    let hottest;
     if(arlo > shak) {
-        return `Arlo's apartment is hottest. It's a scorching ${arlo} degrees Fahrenheit.`
+        hottest = `Arlo's apartment is hottest. It's a scorching ${arlo} degrees Fahrenheit.`
     } else if (shak > arlo) {
-        return `Shak's apartment is hottest. It's a scorching ${shak} degrees Fahrenheit.`
+        hottest = `Shak's apartment is hottest. It's a scorching ${shak} degrees Fahrenheit.`
     } else {
-        return `Surprisingly, both apartments are equally hot at ${arlo} degrees Fahrenheit.`
+        hottest = `Surprisingly, both apartments are equally hot at ${arlo} degrees Fahrenheit.`
     }
+
+    return { hottest: hottest, arlo: arlo, shak: shak }
 }
 function parseArlo(a) {
     try{
