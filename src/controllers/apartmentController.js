@@ -8,24 +8,35 @@ class ApartmentController {
      * @returns void
      */
     getHottestApartment = async (request, response) => {
-       const temps = await getHottestApartment();
-       response.send([determineHottest(temps)]);
-       return;
-    }
-}
-function determineHottest(temps){
-    const arlo = parseArlo(temps.arlo);
-    const shak = temps.shak;
-    let hottest;
-    if(arlo > shak) {
-        hottest = `Arlo's apartment is hottest. It's a scorching ${arlo} degrees Fahrenheit.`
-    } else if (shak > arlo) {
-        hottest = `Shak's apartment is hottest. It's a scorching ${shak} degrees Fahrenheit.`
-    } else {
-        hottest = `Surprisingly, both apartments are equally hot at ${arlo} degrees Fahrenheit.`
+        try{
+            const temps = await getHottestApartment();
+            response.send([determineHottest(temps)]);
+            return;
+        } catch (error) {
+            response.status(error.status || 500).json({error: error.message, status: 500});
+        }
+       
     }
 
-    return { hottest: hottest, arlo: arlo, shak: shak }
+    
+}
+function determineHottest(temps){
+    try {
+        const arlo = parseArlo(temps.arlo);
+        const shak = temps.shak;
+        let hottest;
+        if(arlo > shak) {
+            hottest = `Arlo's apartment is hottest. It's a scorching ${arlo} degrees Fahrenheit.`
+        } else if (shak > arlo) {
+            hottest = `Shak's apartment is hottest. It's a scorching ${shak} degrees Fahrenheit.`
+        } else {
+            hottest = `Surprisingly, both apartments are equally hot at ${arlo} degrees Fahrenheit.`
+        }
+
+        return { hottest: hottest, arlo: arlo, shak: shak }
+    } catch (error) {
+        throw error;
+    }
 }
 function parseArlo(a) {
     try{
